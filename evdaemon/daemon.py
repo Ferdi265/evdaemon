@@ -26,10 +26,10 @@ class Daemon(object):
         else:
             raise ValueError("this module is not registered")
 
-    def emit(self, path):
+    def emit(self, *path):
         path = list(path)
-        for module in self._modules:
-            module.hooks.emit(path)
+        for module in self._modules.values():
+            module.emit_local(*path)
 
     def run(self):
         if len(self._modules) == 0:

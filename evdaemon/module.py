@@ -59,7 +59,9 @@ class Module(object):
     def remove(self, *path):
         self._remove_imp(self._hooks, path)
     def emit(self, *path):
-        self._daemon.emit(list(path))
+        self._daemon.emit(*path)
+    def emit_local(self, *path):
+        self._hooks.emit(list(path))
     
     def listen_private(self, *path):
         self._listen_imp(self._hooks_private, path)

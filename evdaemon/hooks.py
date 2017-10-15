@@ -39,5 +39,4 @@ class Hooks(object):
         if len(path) > 0:
             name = path.pop(0)
             if type(name) in self.subhook_types and name in self.subhooks:
-                print("yes")
                 self.subhooks[name].emit(path)
