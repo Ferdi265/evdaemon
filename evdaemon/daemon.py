@@ -35,6 +35,8 @@ class Daemon(object):
         if len(self._modules) == 0:
             raise ValueError("no modules registered")
         while True:
+            if len(self._files()) == 0:
+                break
             ready, _, _ = select(self._files(), [], [])
             for file in ready:
                 self._trigger_file(file)
