@@ -83,7 +83,7 @@ class Daemon(object):
                 if now > ready_time:
                     print("  > timeout", ready_time - now)
                     fn(ready_time - now)
-                    tos.pop()
+                    tos.pop(0)
                 else:
                     break
 

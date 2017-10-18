@@ -58,6 +58,13 @@ class Module(object):
         self._timeouts.sort(key = lambda to: to[0])
     def listen(self, *path):
         self._listen_imp(self._hooks, path)
+    def listen_once(self, *path):
+        path = list(path)
+        fn = path.pop()
+        def listener_once(*args):
+            self.remove(*path, listener_once)
+            fn(*args)
+        self.listen(*path, listener_once)
     def remove(self, *path):
         self._remove_imp(self._hooks, path)
     def emit(self, *path):
@@ -70,6 +77,13 @@ class Module(object):
     
     def listen_private(self, *path):
         self._listen_imp(self._hooks_private, path)
+    def listen_once_private(self, *path):
+        path = list(path)
+        fn = path.pop()
+        def listener_once(*args):
+            self.remove_private(*path, listener_once)
+            fn(*args)
+        self.listen_private(*path, listener_once)
     def remove_private(self, *path):
         self._remove_imp(self._hooks_private, path)
     def emit_private(self, *path):
