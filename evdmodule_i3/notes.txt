@@ -1,0 +1,12 @@
+communicate with i3 via ipc (socket)
+
+get windows and names via get_tree
+subscribe to events
+
+bar module can use info to display bar
+
+=> future: hook i3 commands and execute them from within python, like herbstluftwm
+=> (via subscribe binding event and command messages)
+=> (bindsym some keys to be "nop" and then act on them from the python script)
+
+=> this will make herbstluftwm and i3 almost interchangable, and very configurable
