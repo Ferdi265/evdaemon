@@ -7,5 +7,5 @@ setup(
 	author_email = 'theFerdi265@gmail.com',
 	url = 'https://github.com/Ferdi265',
 	description = 'event-based extensible daemon',
-	packages = ['evdaemon', 'evdmodule_wm']
+	packages = ['evdaemon', 'evdmodule_wm', 'evdmodule_i3']
 )
