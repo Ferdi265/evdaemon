@@ -40,7 +40,7 @@ class Daemon(object):
             raise ValueError("no modules registered")
         while True:
             print("--- iter")
-            if self._has_files() or self._has_timeouts() == 0:
+            if not self._has_files() and not self._has_timeouts() == 0:
                 print("  ! break")
                 break
             timeout = self._calculate_timeout()
