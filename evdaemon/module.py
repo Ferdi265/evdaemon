@@ -15,6 +15,7 @@ class Module(object):
         self._hooks = Hooks()
         self._hooks_private = Hooks()
         self._files = {}
+        self._timeouts = []
    
     # public API
 
@@ -48,18 +49,22 @@ class Module(object):
         else:
             raise ValueError("file not registered")
 
-    def emit_global(self, *path):
-        if self._daemon != None:
-            self._daemon.emit(path)
-        else:
-            raise ValueError("module not yet registered to an event daemon")
+    def timeouts(self):
+        return self._timeouts
 
+    def timeout(self, secs, fn):
+        to = (perf_counter() + secs, fn)
+        self._timeouts.append(to)
+        self._timeouts.sort(key = lambda to: to[0])
     def listen(self, *path):
         self._listen_imp(self._hooks, path)
     def remove(self, *path):
         self._remove_imp(self._hooks, path)
     def emit(self, *path):
-        self._daemon.emit(*path)
+        if self._daemon != None:
+            self._daemon.emit(*path)
+        else:
+            raise ValueError("module not yet registered to an event daemon")
     def emit_local(self, *path):
         self._hooks.emit(list(path))
     
