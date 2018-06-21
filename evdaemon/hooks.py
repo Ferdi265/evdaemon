@@ -1,4 +1,13 @@
 class Hooks(object):
+    """
+    An event hook container
+
+    Contains a number of direct hooks and subhooks.
+    Only subhook_types can be used to as a subhook filter
+
+    Attributes:
+    - subhook_types: can be used as a subhook filter
+    """
     subhook_types = [int, str]
 
     def __init__(self):
@@ -6,6 +15,11 @@ class Hooks(object):
         self.subhooks = {}
 
     def listen(self, path, listener):
+        """
+        Register a listener on the specified path
+
+        Creates subhooks if the path is not direct
+        """
         if len(path) == 0:
             if listener not in self.listeners:
                 self.listeners.append(listener)
@@ -18,6 +32,12 @@ class Hooks(object):
             self.subhooks[name].listen(path, listener)
 
     def remove(self, path, listener):
+        """
+        Removes a listener on the specified path
+
+        Removes a subhook if that subhook no longer has listeners or
+        subsubhooks
+        """
         if len(path) == 0:
             if listener in self.listeners:
                 self.listeners.remove(listener)
@@ -34,6 +54,9 @@ class Hooks(object):
                 raise ValueError("cannot remove nonexisting listener")
 
     def emit(self, path):
+        """
+        Emits an event on a path to all matching listeners
+        """
         for listener in self.listeners:
             listener(*path)
         if len(path) > 0:

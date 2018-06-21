@@ -5,6 +5,15 @@ from time import perf_counter
 from .state import State
 
 class Daemon(object):
+    """
+    An event loop daemon (evd)
+
+    Daemon modules can be registered and they are woken up when opened files
+    can be read or events fire
+
+    Attributes:
+    - state: contains the state object of all loaded modules
+    """
     def __init__(self):
         self._modules = {}
         self.state = State()
@@ -12,6 +21,11 @@ class Daemon(object):
     # public API
 
     def register(self, module):
+        """
+        Register a module to the daemon
+
+        Adds the module state to the daemon state
+        """
         if module.name in self._modules.keys():
             raise ValueError("module of that name already registered")
         else:
@@ -20,6 +34,11 @@ class Daemon(object):
             self._modules[module.name] = module
 
     def unregister(self, module):
+        """
+        Unregister a module from the daemon
+
+        Removes the module state from the daemon state
+        """
         if module in self._modules.values():
             module.unregister_daemon(self)
             delattr(self.state, module.name)
@@ -28,19 +47,22 @@ class Daemon(object):
             raise ValueError("this module is not registered")
 
     def emit(self, *path):
+        """
+        Emit an event to all listening modules
+        """
         path = list(path)
         for module in self._modules.values():
             module.emit_local(*path)
 
-    def timeout(self, secs, fn):
-        self._timeouts.append((perf_counter() + secs, fn))
-
     def run(self):
+        """
+        Run the event loop
+        """
         if len(self._modules) == 0:
             raise ValueError("no modules registered")
         while True:
             print("--- iter")
-            if not self._has_files() and not self._has_timeouts() == 0:
+            if not self._has_files() and not self._has_timeouts():
                 print("  ! break")
                 break
             timeout = self._calculate_timeout()
