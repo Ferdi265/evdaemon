@@ -45,9 +45,13 @@ EVENT = {
 }
 
 class i3ipcModule(Module):
+    """
+    A low-level evd module responsible for sending messages to the i3 window manager
+    """
     name = "i3ipc"
     def __init__(self):
         super().__init__()
+        self.state.connected = False
         self._connect()
 
     def _get_socketpath(self):
@@ -58,18 +62,27 @@ class i3ipcModule(Module):
         return decoded
 
     def _connect(self):
+        """
+        connect to i3 ipc
+        """
         sock = socket(AF_UNIX)
         sockpath = self._get_socketpath()
         sock.connect(sockpath)
         self.register_file(sock, "socket_ready")
         self.listen_private("socket_ready", self._ready)
         self._socket = sock
+        self.state.connected = True
 
     def _ready(self):
+        """
+        received a message from the ipc socket
+        """
         magic = self._socket.recv(len(MAGIC))
         if magic == b"":
             self._socket.close()
             self.unregister_file(self._socket)
+            self.state.connected = False
+            self.emit(self.name, "disconnect")
         elif magic != MAGIC:
             raise ValueError("remote i3 does not follow the protocol!")
         else:
@@ -79,6 +92,9 @@ class i3ipcModule(Module):
             self._decode_message(msg_type, payload)
 
     def _decode_message(self, msg_type, payload):
+        """
+        decode an i3 ipc message
+        """
         payload = json.loads(payload)
         path = [self.name]
         if msg_type & IS_EVENT == 0:
