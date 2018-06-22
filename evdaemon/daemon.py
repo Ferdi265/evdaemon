@@ -15,7 +15,7 @@ class Daemon(object):
     - state: contains the state object of all loaded modules
     """
     def __init__(self):
-        self._modules = {}
+        self.modules = {}
         self.state = State()
     
     # public API
@@ -26,12 +26,12 @@ class Daemon(object):
 
         Adds the module state to the daemon state
         """
-        if module.name in self._modules.keys():
+        if module.name in self.modules.keys():
             raise ValueError("module of that name already registered")
         else:
             module.register_daemon(self)
             setattr(self.state, module.name, module.state)
-            self._modules[module.name] = module
+            self.modules[module.name] = module
 
     def unregister(self, module):
         """
@@ -39,10 +39,10 @@ class Daemon(object):
 
         Removes the module state from the daemon state
         """
-        if module in self._modules.values():
+        if module in self.modules.values():
             module.unregister_daemon(self)
             delattr(self.state, module.name)
-            del self._modules[module.name]
+            del self.modules[module.name]
         else:
             raise ValueError("this module is not registered")
 
@@ -51,14 +51,14 @@ class Daemon(object):
         Emit an event to all listening modules
         """
         path = list(path)
-        for module in self._modules.values():
+        for module in self.modules.values():
             module.emit_local(*path)
 
     def run(self):
         """
         Run the event loop
         """
-        if len(self._modules) == 0:
+        if len(self.modules) == 0:
             raise ValueError("no modules registered")
         while True:
             print("--- iter")
@@ -77,7 +77,7 @@ class Daemon(object):
     # private API
 
     def _has_timeouts(self):
-        for module in self._modules.values():
+        for module in self.modules.values():
             if len(module.timeouts()) != 0:
                 return True
         return False
@@ -86,7 +86,7 @@ class Daemon(object):
         now = perf_counter()
         first_tos = sorted(
             module.timeouts()[0]
-                for module in self._modules.values()
+                for module in self.modules.values()
                 if len(module.timeouts()) != 0
         )
         if len(first_tos) == 0:
@@ -98,7 +98,7 @@ class Daemon(object):
 
     def _dispatch_timeouts(self):
         now = perf_counter()
-        for module in self._modules.values():
+        for module in self.modules.values():
             tos = module.timeouts()
             while len(tos) != 0:
                 ready_time, fn = tos[0]
@@ -110,7 +110,7 @@ class Daemon(object):
                     break
 
     def _has_files(self):
-        for module in self._modules.values():
+        for module in self.modules.values():
             if len(module.files()) != 0:
                 return True
         return False
@@ -118,12 +118,12 @@ class Daemon(object):
     def _files(self):
         return list(reduce(
             lambda acc, module: acc + list(module.files()),
-            list(self._modules.values()),
+            list(self.modules.values()),
             []
         ))
 
     def _trigger_file(self, file):
-        for module in self._modules.values():
+        for module in self.modules.values():
             if file in module.files():
                 module.trigger_file(file)
                 return

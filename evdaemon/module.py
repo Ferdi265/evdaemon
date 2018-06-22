@@ -22,6 +22,7 @@ class Module(object):
             raise ValueError("class-attribute 'name' has to be set to a module name")
         
         self.global_state = None
+        self.global_modules = None
         self.state = State()
 
         self._daemon = None
@@ -37,6 +38,7 @@ class Module(object):
         Called by the daemon when registering
         """
         self.global_state = daemon.state
+        self.global_modules = daemon.modules
         self._daemon = daemon
 
     def unregister_daemon(self, daemon):
@@ -44,6 +46,7 @@ class Module(object):
         Called by the daemon when unregistering
         """
         self.global_state = None
+        self.global_modules = None
         self._daemon = None
     
     def register_file(self, file, *path):
