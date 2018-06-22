@@ -1,3 +1,5 @@
+from time import perf_counter
+
 from .hooks import Hooks
 from .state import State
 

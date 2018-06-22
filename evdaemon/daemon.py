@@ -91,10 +91,10 @@ class Daemon(object):
         )
         if len(first_tos) == 0:
             return None
-        elif first_tos[0] - now <= 0:
+        elif first_tos[0][0] - now <= 0:
             return 0
         else:
-            return first_tos[0] - now
+            return first_tos[0][0] - now
 
     def _dispatch_timeouts(self):
         now = perf_counter()
@@ -127,4 +127,4 @@ class Daemon(object):
             if file in module.files():
                 module.trigger_file(file)
                 return
-        raise ValueError("file not registered to any module")
+        raise ValueError("file not registered to any module: {}".format(file))
