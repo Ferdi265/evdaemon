@@ -5,7 +5,7 @@ class Workspace(object):
     Attributes:
     - rect: the rectangle the workspace occupies
     - name: the name of the workspace
-    - num: the number of the workspace
+    - num: the number of the workspace (if numbered)
     - visible: whether this workspace can be seen
     - focused: whether this workspace is currently focused
     - urgent: whether something urgent happened on this workspace
@@ -21,3 +21,13 @@ class Workspace(object):
         self.urgent = False
         self.monitor = None
         self.windows = []
+
+    def __str__(self):
+        return ("<Workspace {} visible={}, focused={}, urgent={}>"
+            .format(
+                "'" + self.name + "'" + ((":" + str(self.num)) if self.num != None else ""),
+                self.visible, self.focused, self.urgent
+            )
+        )
+    def __repr__(self):
+        return str(self)

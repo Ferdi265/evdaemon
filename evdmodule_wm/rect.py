@@ -13,3 +13,10 @@ class Rect(object):
         self.y = y
         self.width = w
         self.height = h
+
+    def __str__(self):
+        return ("{}x{}+{}+{}"
+            .format(self.width, self.height, self.x, self.y)
+        )
+    def __repr__(self):
+        return "<Rect {}>".format(self)

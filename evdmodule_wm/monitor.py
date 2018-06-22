@@ -15,3 +15,10 @@ class Monitor(object):
         self.active = False
         self.primary = False
         self.workspaces = []
+
+    def __str__(self):
+        return ("<Monitor {} rect={}, active={}, primary={}>"
+            .format(self.name, self.rect, self.active, self.primary)
+        )
+    def __repr__(self):
+        return str(self)
