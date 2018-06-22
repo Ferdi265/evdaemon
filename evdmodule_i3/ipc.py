@@ -116,6 +116,8 @@ class i3ipcModule(Module):
         self.emit(*path, payload)
 
     def send_cmd(self, cmd, payload = ""):
+        if type(payload) != str:
+            payload = json.dumps(payload)
         self._socket.send(
             MAGIC +
             struct.pack("I", len(payload)) +
