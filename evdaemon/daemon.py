@@ -61,17 +61,12 @@ class Daemon(object):
         if len(self.modules) == 0:
             raise ValueError("no modules registered")
         while True:
-            print("--- iter")
             if not self._has_files() and not self._has_timeouts():
-                print("  ! break")
                 break
             timeout = self._calculate_timeout()
-            print("  . select", timeout)
             ready, _, _ = select(self._files(), [], [], timeout)
-            print("  . ready")
             self._dispatch_timeouts()
             for file in ready:
-                print("  > file")
                 self._trigger_file(file)
 
     # private API
@@ -103,7 +98,6 @@ class Daemon(object):
             while len(tos) != 0:
                 ready_time, fn = tos[0]
                 if now > ready_time:
-                    print("  > timeout", ready_time - now)
                     fn(ready_time - now)
                     tos.pop(0)
                 else:
