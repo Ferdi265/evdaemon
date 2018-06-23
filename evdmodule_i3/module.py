@@ -102,6 +102,8 @@ class i3Module(wmModule):
 
     def _mode_event(self, payload):
         self.state.mode = payload["change"]
+        if self.state.mode == "default":
+            self.state.mode = None
         self.emit("wm", "mode")
 
     def _window_event(self, payload):
