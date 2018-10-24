@@ -111,12 +111,12 @@ class i3Module(wmModule):
 
     def _window_event(self, payload):
         container = payload["container"]
-        
+
         if payload["change"] == "focus" or (payload["change"] == "title" and container["focused"]):
             self.state.title = container["name"]
             if self.state.title == None:
                 self.state.title = ""
             self.emit("wm", "title")
-    
+
     def _shutdown_event(self, payload):
         self.emit("wm", "shutdown")
