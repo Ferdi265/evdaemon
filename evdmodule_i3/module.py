@@ -1,3 +1,4 @@
+import sys
 from evdmodule_wm import *
 
 from .ipc import i3ipcModule
@@ -74,7 +75,7 @@ class i3Module(wmModule):
 
     def _subscribe(self, payload):
         if "success" not in payload or not payload["success"]:
-            print("[WARN][i3]", "subscribe:", "failed!")
+            print("[WARN][i3]", "subscribe:", "failed!", file = sys.stderr)
 
     def _outputs(self, payload):
         monitors = dict()
@@ -96,7 +97,7 @@ class i3Module(wmModule):
 
     def _output_event(self, payload):
         if "change" not in payload or payload["change"] != "unspecified":
-            print("[WARN][i3]", "output event:", "contains unknown change:", payload["change"])
+            print("[WARN][i3]", "output event:", "contains unknown change:", payload["change"], file = sys.stderr)
 
         self._ipc.send_cmd("outputs")
 
