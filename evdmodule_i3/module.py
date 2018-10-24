@@ -7,8 +7,9 @@ class i3Module(wmModule):
     """
     An evd window manager module for the i3 window manager
     """
-    def __init__(self, ipc = None):
+    def __init__(self, events = ["workspace", "output", "mode", "window", "shutdown"], ipc = None):
         super().__init__()
+        self.events = events
 
         self.listen("i3ipc", "reply", "workspaces", self._workspaces)
         self.listen("i3ipc", "reply", "subscribe", self._subscribe)
@@ -28,12 +29,12 @@ class i3Module(wmModule):
         self._ipc = daemon.modules["i3ipc"]
         self._ipc.send_cmd("outputs")
         self._ipc.send_cmd("workspaces")
-        self._ipc.send_cmd("subscribe", ["workspace", "output", "mode", "window", "shutdown"])
+        self._ipc.send_cmd("subscribe", self.events)
 
     def unregister_daemon(self, daemon):
         super().unregister_daemon()
         daemon.unregister(self._ipc)
-  
+
     def _construct_workspace(self, workspace):
         if workspace == None:
             return None
@@ -75,6 +76,7 @@ class i3Module(wmModule):
 
     def _subscribe(self, payload):
         if "success" not in payload or not payload["success"]:
+            print(payload)
             print("[WARN][i3]", "subscribe:", "failed!", file = sys.stderr)
 
     def _outputs(self, payload):
