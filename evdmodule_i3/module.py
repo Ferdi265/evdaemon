@@ -117,6 +117,9 @@ class i3Module(wmModule):
             if self.state.title == None:
                 self.state.title = ""
             self.emit("wm", "title")
+        elif payload["change"] == "close" and container["focused"]:
+            self.state.title = ""
+            self.emit("wm", "title")
 
     def _shutdown_event(self, payload):
         self.emit("wm", "shutdown")
