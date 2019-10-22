@@ -49,13 +49,14 @@ class i3ipcModule(Module):
     A low-level evd module responsible for sending messages to the i3 window manager
     """
     name = "i3ipc"
-    def __init__(self):
+    def __init__(self, socketpath_binary = "i3"):
         super().__init__()
+        self._socketbin = socketpath_binary
         self.state.connected = False
         self._connect()
 
     def _get_socketpath(self):
-        i3 = Popen(["i3", "--get-socketpath"], stdout = PIPE, stderr = DEVNULL)
+        i3 = Popen([self._socketbin, "--get-socketpath"], stdout = PIPE, stderr = DEVNULL)
         i3.wait()
         raw = i3.stdout.read()
         decoded = raw[:-1].decode()
