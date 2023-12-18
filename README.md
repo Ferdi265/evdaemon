@@ -8,8 +8,7 @@ timeouts in a non-blocking way.
 
 ## Installation
 
-evdaemon has no dependencies, just install via `python setup.py install`
-(optionally with `--user`).
+evdaemon has no dependencies, just install via `pip install --editable .`.
 
 This installs `evdaemon`, `evdmodule_i3`, and `evdmodule_wm`.
 
