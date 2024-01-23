@@ -6,8 +6,7 @@ for my i3 and swaybar configs.
 It uses the `os.select()` feature to read from file descriptors and wait for
 timeouts in a non-blocking way.
 
-Disclaimer: This is a really hacky project I built in 2017 and which I intend
-to replace with an asyncio replacement.
+MAINTENANCE NOTE: This project is discontinued.
 
 ## Installation
 
